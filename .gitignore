@@ -1,0 +1,8 @@
+*.dat
+*.txt
+*.out
+*.bin
+*.o
+app
+test_bin
+varint
