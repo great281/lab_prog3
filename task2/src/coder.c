@@ -46,6 +46,8 @@ int encode(uint32_t code_point, CodeUnits *code_units)
         res = (0xF0 | code_point) & 0xF7;               //0xF0 = 11110000   0xF7 = 11110111
         code_units->code[0] = res;
     }
+    else
+        return -1;
 
     return 0;
 }

@@ -5,7 +5,7 @@ int encode_file(const char *in_file_name, const char *out_file_name)
     if(in_file_name == NULL || out_file_name == NULL)
         return -1;
     
-    FILE *text, *bin;
+    FILE *text, *bin, *check;
     CodeUnits code_unit;
     uint32_t code_point;
 
@@ -17,6 +17,11 @@ int encode_file(const char *in_file_name, const char *out_file_name)
     if((bin = fopen(out_file_name, "wb")) == NULL)
     {
         fprintf(stderr, "Ошибка при создании бинарного файла %s\n", out_file_name);
+        return -1;
+    }
+    if((check = fopen("check.txt", "wb")) == NULL)
+    {
+        fprintf(stderr, "Ошибка при создании check.txt\n");
         return -1;
     }
 
@@ -33,7 +38,13 @@ int encode_file(const char *in_file_name, const char *out_file_name)
             fprintf(stderr, "Ошибка функции encode\n");
             return -1;
         }
-
+        code_point = 0;
+        for(int i = 0; i < code_unit.length; i++)
+        {
+            code_point <<= 8;
+            code_point += code_unit.code[i];
+        }
+        fprintf(check, "%x\n", code_point);
         if(write_code_unit(bin, &code_unit) != 0)
         {
             fprintf(stderr, "Ошибка записи в бинарный файл\n");

@@ -7,7 +7,7 @@ int main()
     FILE *uncom, *com;
     uint8_t *buf;
     const uint8_t **bufp;
-    uint32_t *value;
+    uint32_t *value, test;
     int size = 0;
     int read_uncom, read_com;
     
@@ -75,6 +75,21 @@ int main()
             exit(EXIT_FAILURE);
         }
     }
+    printf("Проверка работы алгоритма\nВведите целое число в шестнадцатирином виде: ");
+    scanf("%x", &test);
+    size = encode_varint(test, buf);
+    test = 0;
+    for(int i = 0; i < size - 1; i++)
+    {
+        test += buf[i];
+        test <<= 8;
+    }
+    test += buf[size - 1];
+    printf("Encode: %x\n", test);
+    bufp[0] = buf;
+    test = decode_varint(bufp);
+    printf("Decode: %x\n", test);
+    printf("\n");
     free(buf);
     free(bufp);
     free(value);
