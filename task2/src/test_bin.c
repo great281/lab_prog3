@@ -7,6 +7,7 @@ int main(int argc, char *argv[])
     FILE *bin, *res;
     uint8_t buf;
     uint8_t test = 0xFF;                        //0xFF = 11111111
+    int check = 1;
     
     printf("Проверка на утечку данных\n");
     printf("Бинарный файл: %s\n", argv[1]);
@@ -24,9 +25,17 @@ int main(int argc, char *argv[])
     }
     for(int i = 0; (fread(&buf, sizeof(uint8_t), 1, bin) == 1); i++)
     {
-        if((buf >> 6) == 3)
-            fwrite(&test, sizeof(uint8_t), 1, res);
         fwrite(&buf, sizeof(uint8_t), 1, res);
+        if((buf >> 6) == 3)
+        {
+            if(check == 1)
+            {
+                fwrite(&test, sizeof(uint8_t), 1, res);
+                check = 0;
+            }
+            else
+                check = 1;
+        }
     }
 
     printf("Завершение\nЗапустите ./app decode %s res.txt\n", argv[2]);
